@@ -3,7 +3,7 @@
 ## Requirement
 
 This plugin needs [li3_behaviors](https://github.com/jails/li3_behaviors).
-
+This plugin needs [li3_fixtures](https://github.com/UnionOfRAD/li3_fixtures) (only if you intend to run tests).
 
 ## Installation
 
