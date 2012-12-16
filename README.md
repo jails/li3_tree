@@ -22,11 +22,19 @@ Libraries::add('li3_tree');
 
 ## Presentation
 
-Model behaviors providing a simple way to extend models. This pattern allow common logic to be encapsulated inside behaviors for keeping models lite and composed only by its own business logic.
+This behavior store hierarchical datas in a database table using the MPTT logic.
+
+## Constraints
+
+To use the tree behavior, your table needs the following 3 extra fields:
+
+- The `'parent'` config field. By default the field must be named `parent_id` in the table.
+- The `'left'` config field. By default the field must be named `lft` in the table.
+- The `'right'` config field. By default the field must be named `rght` in the table.
 
 ## API
 
-Model creation:
+Example of attaching the tree behavior to a model:
 
 ```php
 <?php
