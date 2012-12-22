@@ -1,0 +1,14 @@
+language: php
+
+php: 5.4
+
+before_script:
+  - mkdir config
+  - cp tests/ci_bootstrap.php config/bootstrap.php
+  - mkdir ../libraries
+  - git clone git://github.com/UnionOfRAD/lithium.git ../libraries/lithium
+  - git clone git://github.com/jails/li3_behaviors.git ../libreries/li3_behaviors
+  - git clone git://github.com/UnionOfRAD/li3_fixtures.git ../libraries/li3_fixtures
+  - git clone git://github.com/UnionOfRAD/li3_sqltools.git ../libreries/li3_sqltools
+
+script: ../libraries/lithium/console/li3 test --filters=Profiler tests/integration
