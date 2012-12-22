@@ -3,6 +3,15 @@
 define('LITHIUM_APP_PATH', dirname(__DIR__));
 define('LITHIUM_LIBRARY_PATH', dirname(LITHIUM_APP_PATH) . '/libraries');
 
+$paths = array(
+	'APP' => LITHIUM_APP_PATH,
+	'app' => realpath(LITHIUM_APP_PATH),
+	'LIBRARY' => LITHIUM_LIBRARY_PATH,
+	'library' => realpath(LITHIUM_LIBRARY_PATH)
+);
+
+var_dump($paths);
+
 /**
  * Locate and load Lithium core library files.  Throws a fatal error if the core can't be found.
  * If your Lithium core directory is named something other than `lithium`, change the string below.
