@@ -34,22 +34,30 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		parent::__construct($config + $this->_defaults);
 	}
 
+	/**
+	 * Initializer function called by the constructor unless the constructor `'init'` flag is set
+	 * to `false`.
+	 *
+	 * @see lithium\core\Object
+	 * @throws ConfigException
+	 */
 	public function _init() {
 		parent::_init();
-		if ($model = $this->_model) {
-			$behavior = $this;
-			$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
-				if ($behavior->invokeMethod('_beforeSave', array($params))) {
-					return $chain->next($self, $params, $chain);
-				}
-			});
-
-			$model::applyFilter('delete', function($self, $params, $chain) use ($behavior) {
-				if ($behavior->invokeMethod('_beforeDelete', array($params))) {
-					return $chain->next($self, $params, $chain);
-				}
-			});
+		if (!$model = $this->_model) {
+			throw new ConfigException("`'model'` needs to been defined for behavior.");
 		}
+		$behavior = $this;
+		$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
+			if ($behavior->invokeMethod('_beforeSave', array($params))) {
+				return $chain->next($self, $params, $chain);
+			}
+		});
+
+		$model::applyFilter('delete', function($self, $params, $chain) use ($behavior) {
+			if ($behavior->invokeMethod('_beforeDelete', array($params))) {
+				return $chain->next($self, $params, $chain);
+			}
+		});
 	}
 
 	/**

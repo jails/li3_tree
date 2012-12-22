@@ -4,6 +4,7 @@
 
 - This plugin needs [li3_behaviors](https://github.com/jails/li3_behaviors).
 - This plugin needs [li3_fixtures](https://github.com/UnionOfRAD/li3_fixtures) (only if you intend to run tests).
+- This plugin needs [li3_sqltools](https://github.com/UnionOfRAD/li3_sqltools) (only if you intend to run tests).
 
 ## Installation
 
@@ -72,7 +73,9 @@ $subelement1->save();
 
 var_export($root1->children());
 var_export($subelement1->path());
-
-
 ?>
 ```
+
+## Greetings
+
+The li3 team, Vogan and all others which make that possible (I mean only because Chuck Norris agreed).
