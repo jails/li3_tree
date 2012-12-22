@@ -15,6 +15,7 @@ if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
 }
 
 use lithium\core\Libraries;
+use lithium\data\Connections;
 
 /**
  * Add the Lithium core library.  This sets default paths and initializes the autoloader.  You
@@ -34,5 +35,18 @@ Libraries::add('li3_tree', array('default' => true));
 Libraries::add('li3_behaviors');
 Libraries::add('li3_fixtures');
 Libraries::add('li3_sqltools');
+
+/**
+ * Setup test database
+ */
+Connections::add('test', array(
+	'type' => 'database',
+	'adapter' => 'MySql',
+	'host' => 'localhost',
+	'login' => 'root',
+	'password' => '',
+	'database' => 'li3tree_test',
+	'encoding' => 'UTF-8'
+)));
 
 ?>
