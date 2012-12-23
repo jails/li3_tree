@@ -89,7 +89,7 @@ $neighbor1->move(0);
 $subelement1 = Comment::create(array('post_id' => 1, 'parent_id' => $neighbor1->id));
 $subelement1->save();
 
-var_export($root1->children());
+var_export($root1->childrens());
 var_export($subelement1->path());
 ?>
 ```
