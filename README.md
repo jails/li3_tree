@@ -51,24 +51,42 @@ class Comments extends \li3_behaviors\data\model\Behaviorable {
 ?>
 ```
 
-Example of use:
+### Options
+
+In order to store multiple trees in the same table you need to set the `'scope'` option. For example, if a `Post` hasMany `Comment` and a `Comment` belongsTo a `Post`. To allow multiple `Comment` trees in the same table, you must scope `Comment` by the foreign key `post_id`. This way all `Comment` trees will be independant.
+
+`'scope'` can be a full condition:
+
+```php
+ protected $_actsAs = array('Tree' => array('scope' => array('region' => 'head')));
+```
+
+Or a simple fieldname like a foreign key:
+
+```php
+ protected $_actsAs = array('Tree' => array('scope' => array('post_id')));
+```
+
+In this last case, the full condition will be populated from entity datas. This mean you can't do any CRUD action if the entity datas don't contain all necessary datas for perfoming a well scoped CRUD action.
+
+### Example of use:
 ```php
 <?php
 
-$root1 = Comment::create(array('image_id' => 1));
+$root1 = Comment::create(array('post_id' => 1));
 $root1->save();
 
-$root2 = Comment::create(array('image_id' => 2));
+$root2 = Comment::create(array('post_id' => 2));
 $root2->save();
 
-$neighbor1 = Comment::create(array('image_id' => 1));
+$neighbor1 = Comment::create(array('post_id' => 1));
 $neighbor1->save();
 
 $neighbor1->moveDown();
 $root1->moveUp();
 $neighbor1->move(0);
 
-$subelement1 = Comment::create(array('image_id' => 1, 'parent_id' => $neighbor1->id));
+$subelement1 = Comment::create(array('post_id' => 1, 'parent_id' => $neighbor1->id));
 $subelement1->save();
 
 var_export($root1->children());
