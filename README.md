@@ -97,3 +97,8 @@ var_export($subelement1->path());
 ## Greetings
 
 The li3 team, Vogan and all others which make that possible (I mean only because Chuck Norris agreed).
+
+## Build status
+[![Build Status](https://secure.travis-ci.org/jails/li3_tree.png?branch=master)](http://travis-ci.org/jails/li3_tree)
+
+
