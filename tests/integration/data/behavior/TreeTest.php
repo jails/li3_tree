@@ -13,6 +13,7 @@ use lithium\Data\Source\Database;
 use li3_fixtures\test\Fixtures;
 use li3_tree\tests\fixture\model\Image;
 use li3_tree\tests\fixture\model\Comment;
+use li3_tree\extensions\data\behavior\Tree;
 
 class TreeTest extends \lithium\test\Integration {
 
@@ -65,6 +66,11 @@ class TreeTest extends \lithium\test\Integration {
 		Comment::reset();
 		Image::reset();
 		Fixtures::reset();
+	}
+
+	public function testInit() {
+		$this->expectException("/`'model'` option needs to be defined/");
+		new Tree();
 	}
 
 	public function testVerify() {

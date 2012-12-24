@@ -8,6 +8,7 @@
 
 namespace li3_tree\extensions\data\behavior;
 
+use lithium\core\ConfigException;
 use UnexpectedValueException;
 
 class Tree extends \li3_behaviors\data\model\Behavior {
@@ -44,7 +45,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	public function _init() {
 		parent::_init();
 		if (!$model = $this->_model) {
-			throw new ConfigException("`'model'` needs to been defined for behavior.");
+			throw new ConfigException("`'model'` option needs to be defined.");
 		}
 		$behavior = $this;
 		$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
