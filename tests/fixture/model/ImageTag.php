@@ -8,8 +8,11 @@
 
 namespace li3_tree\tests\fixture\model;
 
-class ImageTag extends \li3_behaviors\data\model\Behaviorable {
+use li3_behaviors\data\model\Behaviors;
 
-	public $belongsTo = array('Image', 'Tag');
+class ImageTag extends \lithium\data\Model {
+	use Behaviors;
+
+	public $belongsTo = ['Image', 'Tag'];
 
 }

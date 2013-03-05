@@ -8,9 +8,12 @@
 
 namespace li3_tree\tests\fixture\model;
 
-class Tag extends \li3_behaviors\data\model\Behaviorable {
+use li3_behaviors\data\model\Behaviors;
 
-	public $hasMany = array('ImageTag');
-	public $belongsTo = array('Author');
-	public $hasAndBelongsToMany = array('Image' => array('via' => 'ImageTag'));
+class Tag extends \lithium\data\Model {
+	use Behaviors;
+
+	public $hasMany = ['ImageTag'];
+	public $belongsTo = ['Author'];
+	public $hasAndBelongsToMany = ['Image' => ['via' => 'ImageTag']];
 }

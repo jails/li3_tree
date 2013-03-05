@@ -8,12 +8,15 @@
 
 namespace li3_tree\tests\fixture\model;
 
-class Image extends \li3_behaviors\data\model\Behaviorable {
+use li3_behaviors\data\model\Behaviors;
 
-	public $belongsTo = array('Gallery');
+class Image extends \lithium\data\Model {
+	use Behaviors;
 
-	public $hasMany = array('ImageTag', 'Comment');
+	public $belongsTo = ['Gallery'];
 
-	public $hasAndBelongsToMany = array('Tag' => array('via' => 'ImageTag'));
+	public $hasMany = ['ImageTag', 'Comment'];
+
+	public $hasAndBelongsToMany = ['Tag' => ['via' => 'ImageTag']];
 
 }

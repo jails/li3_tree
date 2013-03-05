@@ -8,9 +8,12 @@
 
 namespace li3_tree\tests\fixture\model;
 
-class Comment extends \li3_behaviors\data\model\Behaviorable {
+use li3_behaviors\data\model\Behaviors;
 
-	public $belongsTo = array('Image');
+class Comment extends \lithium\data\Model {
+	use Behaviors;
 
-	protected $_actsAs = array('Tree');
+	public $belongsTo = ['Image'];
+
+	protected $_actsAs = ['Tree'];
 }
