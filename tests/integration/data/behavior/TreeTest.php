@@ -17,7 +17,7 @@ use li3_tree\extensions\data\behavior\Tree;
 
 class TreeTest extends \lithium\test\Integration {
 
-	protected $_connection = 'test';
+	protected $_connection = 'default';
 
 	protected $_fixtures = array(
 		'image' => 'li3_tree\tests\fixture\source\ImageFixture',
@@ -65,7 +65,7 @@ class TreeTest extends \lithium\test\Integration {
 	public function tearDown() {
 		Comment::reset();
 		Image::reset();
-		Fixtures::reset();
+		Fixtures::clear('db');
 	}
 
 	public function testInit() {
