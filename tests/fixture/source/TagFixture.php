@@ -12,18 +12,18 @@ class TagFixture extends \li3_fixtures\test\Fixture {
 
 	protected $_model = 'li3_tree\tests\fixture\model\Tag';
 
-	protected $_fields = array(
-		'id' => array('type' => 'id'),
-		'name' => array('type' => 'string', 'length' => 50),
-		'author_id' => array('type' => 'integer', 'length' => 11)
-	);
+	protected $_fields = [
+		'id' => ['type' => 'id'],
+		'name' => ['type' => 'string', 'length' => 50],
+		'author_id' => ['type' => 'integer', 'length' => 11]
+	];
 
-	protected $_records = array(
-		array('id' => 1, 'name' => 'High Tech', 'author_id' => 6),
-		array('id' => 3, 'name' => 'Sport', 'author_id' => 9),
-		array('id' => 4, 'name' => 'Computer', 'author_id' => 6),
-		array('id' => 5, 'name' => 'Art', 'author_id' => 2),
-		array('id' => 6, 'name' => 'Science', 'author_id' => 1),
-		array('id' => 7, 'name' => 'City', 'author_id' => 2)
-	);
+	protected $_records = [
+		['id' => 1, 'name' => 'High Tech', 'author_id' => 6],
+		['id' => 3, 'name' => 'Sport', 'author_id' => 9],
+		['id' => 4, 'name' => 'Computer', 'author_id' => 6],
+		['id' => 5, 'name' => 'Art', 'author_id' => 2],
+		['id' => 6, 'name' => 'Science', 'author_id' => 1],
+		['id' => 7, 'name' => 'City', 'author_id' => 2]
+	];
 }

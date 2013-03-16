@@ -27,7 +27,7 @@ Libraries::add('lithium');
  * Add the application.  You can pass a `'path'` key here if this bootstrap file is outside of
  * your main application, but generally you should not need to change any settings.
  */
-Libraries::add('li3_tree', array('default' => true));
+Libraries::add('li3_tree', ['default' => true]);
 
 /**
  * Load test dependencies
@@ -39,7 +39,7 @@ Libraries::add('li3_sqltools');
 /**
  * Setup test database
  */
-Connections::add('test', array(
+Connections::add('default', [
 	'type' => 'database',
 	'adapter' => 'MySql',
 	'host' => 'localhost',
@@ -47,6 +47,6 @@ Connections::add('test', array(
 	'password' => '',
 	'database' => 'li3tree_test',
 	'encoding' => 'UTF-8'
-));
+]);
 
 ?>

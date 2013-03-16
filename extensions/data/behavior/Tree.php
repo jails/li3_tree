@@ -18,20 +18,20 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 *
 	 * @var array
 	 */
-	protected $_defaults = array(
+	protected $_defaults = [
 		'parent' => 'parent_id',
 		'left' => 'lft',
 		'right' => 'rght',
 		'recursive' => false,
-		'scope' => array()
-	);
+		'scope' => []
+	];
 
 	/**
 	 * Constructor
 	 *
 	 * @param array $config The configuration array
 	 */
-	public function __construct($config = array()){
+	public function __construct($config = []){
 		parent::__construct($config + $this->_defaults);
 	}
 
@@ -49,13 +49,13 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		}
 		$behavior = $this;
 		$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
-			if ($behavior->invokeMethod('_beforeSave', array($params))) {
+			if ($behavior->invokeMethod('_beforeSave', [$params])) {
 				return $chain->next($self, $params, $chain);
 			}
 		});
 
 		$model::applyFilter('delete', function($self, $params, $chain) use ($behavior) {
-			if ($behavior->invokeMethod('_beforeDelete', array($params))) {
+			if ($behavior->invokeMethod('_beforeDelete', [$params])) {
 				return $chain->next($self, $params, $chain);
 			}
 		});
@@ -69,7 +69,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 * @throws UnexpectedValueException
 	 */
 	protected function _scope($entity) {
-		$scope = array();
+		$scope = [];
 		foreach ($this->_config['scope'] as $key => $value) {
 			if (is_numeric($key)) {
 				if (isset($entity, $value)) {
@@ -101,19 +101,19 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 			if ($mode == 'count') {
 				return ($entity->$right - $entity->$left - 1) / 2;
 			} else {
-				return $model::find($mode, array(
-					'conditions' => array(
-						$left => array('>' => $entity->$left),
-						$right => array('<' => $entity->$right)
-					) + $this->_scope($entity),
-					'order' => array($left => 'asc'))
+				return $model::find($mode, [
+					'conditions' => [
+						$left => ['>' => $entity->$left],
+						$right => ['<' => $entity->$right]
+					] + $this->_scope($entity),
+					'order' => [$left => 'asc']]
 				);
 			}
 		} else {
 			$id = $entity->{$model::key()};
-			return $model::find($mode, array(
-				'conditions' => array($parent => $id) + $this->_scope($entity),
-				'order' => array($left => 'asc'))
+			return $model::find($mode, [
+				'conditions' => [$parent => $id] + $this->_scope($entity),
+				'order' => [$left => 'asc']]
 			);
 		}
 	}
@@ -129,7 +129,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	public function path($entity) {
 		extract($this->_config);
 
-		$data = array();
+		$data = [];
 		while ($entity->data($parent) != null) {
 			$data[] = $entity;
 			$entity = $this->_getById($entity->$parent);
@@ -137,7 +137,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$data[] = $entity;
 		$data = array_reverse($data);
 		$model = $entity->model();
-		return $model::connection()->item($model, $data, array('exists' => true, 'class' => 'set'));
+		return $model::connection()->item($model, $data, ['exists' => true, 'class' => 'set']);
 	}
 
 	/**
@@ -159,7 +159,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 				return false;
 			}
 			$parentId = $newParent->data($model::key());
-			$entity->set(array($parent => $parentId));
+			$entity->set([$parent => $parentId]);
 			$entity->save();
 			$parentNode = $newParent;
 		} else {
@@ -198,10 +198,10 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 				$this->_insertParent($entity);
 			} else {
 				$max = $this->_getMax($entity);
-				$entity->set(array(
+				$entity->set([
 					$left => $max + 1,
 					$right => $max + 2
-				));
+				]);
 			}
 		} elseif (isset($entity->$parent)) {
 			if ($entity->$parent == $entity->data($model::key())) {
@@ -244,10 +244,10 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		if ($parent) {
 			$r = $parent->$right;
 			$this->_update($r, '+', 2, $this->_scope($entity));
-			$entity->set(array(
+			$entity->set([
 				$left => $r,
 				$right => $r + 1
-			));
+			]);
 		}
 	}
 
@@ -270,7 +270,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$span = $entity->$right - $entity->$left;
 		$spanToZero = $entity->$right;
 
-		$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
+		$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
 		$shiftY = $span + 1;
 
 		if ($entity->$parent !== null) {
@@ -286,18 +286,18 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$this->_updateBetween($rangeX, '-', $spanToZero, $this->_scope($entity));
 
 		if ($entity->$right < $boundary) {
-			$rangeY = array('floor' => $entity->$right + 1, 'ceiling' => $boundary - 1);
+			$rangeY = ['floor' => $entity->$right + 1, 'ceiling' => $boundary - 1];
 			$this->_updateBetween($rangeY, '-', $shiftY, $this->_scope($entity));
 			$shiftX = $boundary - $entity->$right - 1;
 		} else {
-			$rangeY = array('floor' => $boundary, 'ceiling' => $entity->$left - 1);
+			$rangeY = ['floor' => $boundary, 'ceiling' => $entity->$left - 1];
 			$this->_updateBetween($rangeY, '+', $shiftY, $this->_scope($entity));
 			$shiftX = ($boundary - 1) - $entity->$left + 1;
 		}
-		$this->_updateBetween(array(
+		$this->_updateBetween([
 			'floor' => (0 - $span), 'ceiling' => 0
-		), '+', $spanToZero + $shiftX, $this->_scope($entity));
-		$entity->set(array($left => $entity->$left + $shiftX, $right => $entity->$right + $shiftX));
+		], '+', $spanToZero + $shiftX, $this->_scope($entity));
+		$entity->set([$left => $entity->$left + $shiftX, $right => $entity->$right + $shiftX]);
 	}
 
 	/**
@@ -315,7 +315,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$span = $entity->$right - $entity->$left;
 		$spanToZero = $entity->$right;
 
-		$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
+		$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
 
 		$this->_updateBetween($rangeX, '-', $spanToZero, $oldScope, $newScope);
 		$this->_update($entity->$right, '-', $span + 1, $oldScope);
@@ -323,10 +323,10 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$newParent = $this->_getById($entity->$parent);
 		$r = $newParent->$right;
 		$this->_update($r, '+', $span + 1, $newScope);
-		$this->_updateBetween(array(
+		$this->_updateBetween([
 			'floor' => (0 - $span), 'ceiling' => 0
-		), '+', $span + $r, $newScope);
-		$entity->set(array($left => $r, $right => $span + $r));
+		], '+', $span + $r, $newScope);
+		$entity->set([$left => $r, $right => $span + $r]);
 	}
 
 	/**
@@ -342,7 +342,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$span = 1;
 		if ($entity->$right - $entity->$left != 1) {
 			$span = $entity->$right - $entity->$left;
-			$model::remove(array($parent => $entity->data($model::key())));
+			$model::remove([$parent => $entity->data($model::key())]);
 		}
 		$this->_update($entity->$right, '-', $span + 1, $this->_scope($entity));
 		return true;
@@ -357,7 +357,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 */
 	protected function _getById($id) {
 		$model = $this->_config['model'];
-		return $model::find('first', array('conditions' => array($model::key() => $id)));
+		return $model::find('first', ['conditions' => [$model::key() => $id]]);
 	}
 
 	/**
@@ -370,16 +370,16 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 * @param integer $span value to be added/subtracted (defaults to 2)
 	 * @param array $scp The scope to apply updates on
 	 */
-	protected function _update($rght, $dir = '+', $span = 2, $scp = array()) {
+	protected function _update($rght, $dir = '+', $span = 2, $scp = []) {
 		extract($this->_config);
 
-		$model::update(array($right => (object) ($right . $dir . $span)), array(
-			$right => array('>=' => $rght)
-		) + $scp);
+		$model::update([$right => (object) ($right . $dir . $span)], [
+			$right => ['>=' => $rght]
+		] + $scp);
 
-		$model::update(array($left => (object) ($left . $dir . $span)), array(
-			$left => array('>' => $rght)
-		) + $scp);
+		$model::update([$left => (object) ($left . $dir . $span)], [
+			$left => ['>' => $rght]
+		] + $scp);
 	}
 
 	/**
@@ -393,20 +393,20 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 * @param array $scp The scope to apply updates on
 	 * @param array $data Additionnal scope datas (optionnal)
 	 */
-	protected function _updateBetween($range, $dir = '+', $span = 2, $scp = array(), $data = array()) {
+	protected function _updateBetween($range, $dir = '+', $span = 2, $scp = [], $data = []) {
 		extract($this->_config);
 
-		$model::update(array($right => (object) ($right . $dir . $span)), array(
-			$right => array(
+		$model::update([$right => (object) ($right . $dir . $span)], [
+			$right => [
 				'>=' => $range['floor'],
 				'<=' => $range['ceiling']
-		)) + $scp);
+		]] + $scp);
 
-		$model::update(array($left => (object) ($left . $dir . $span)) + $data, array(
-			$left => array(
+		$model::update([$left => (object) ($left . $dir . $span)] + $data, [
+			$left => [
 				'>=' => $range['floor'],
 				'<=' => $range['ceiling']
-		)) + $scp);
+		]] + $scp);
 	}
 
 	/**
@@ -416,28 +416,28 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 */
 	public function moveDown($entity) {
 		extract($this->_config);
-		$next = $model::find('first', array(
-					'conditions' => array(
+		$next = $model::find('first', [
+					'conditions' => [
 						$parent => $entity->$parent,
 						$left => $entity->$right + 1
-				)));
+				]]);
 
 		if ($next != null) {
 			$spanToZero = $entity->$right;
-			$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
+			$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
 			$shiftX = ($next->$right - $next->$left) + 1;
-			$rangeY = array('floor' => $next->$left, 'ceiling' => $next->$right);
+			$rangeY = ['floor' => $next->$left, 'ceiling' => $next->$right];
 			$shiftY = ($entity->$right - $entity->$left) + 1;
 
 			$this->_updateBetween($rangeX, '-', $spanToZero, $this->_scope($entity));
 			$this->_updateBetween($rangeY, '-', $shiftY, $this->_scope($entity));
-			$this->_updateBetween(array(
+			$this->_updateBetween([
 				'floor' => (0 - $shiftY), 'ceiling' => 0
-			), '+', $spanToZero + $shiftX, $this->_scope($entity));
+			], '+', $spanToZero + $shiftX, $this->_scope($entity));
 
-			$entity->set(array(
+			$entity->set([
 				$left => $entity->$left + $shiftX, $right => $entity->$right + $shiftX
-			));
+			]);
 		}
 		return true;
 	}
@@ -449,30 +449,30 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	 */
 	public function moveUp($entity) {
 		extract($this->_config);
-		$prev = $model::find('first', array(
-			'conditions' => array(
+		$prev = $model::find('first', [
+			'conditions' => [
 				$parent => $entity->$parent,
 				$right => $entity->$left - 1
-			)
-		));
+			]
+		]);
 		if (!$prev) {
 			return true;
 		}
 		$spanToZero = $entity->$right;
-		$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
+		$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
 		$shiftX = ($prev->$right - $prev->$left) + 1;
-		$rangeY = array('floor' => $prev->$left, 'ceiling' => $prev->$right);
+		$rangeY = ['floor' => $prev->$left, 'ceiling' => $prev->$right];
 		$shiftY = ($entity->$right - $entity->$left) + 1;
 
 		$this->_updateBetween($rangeX, '-', $spanToZero, $this->_scope($entity));
 		$this->_updateBetween($rangeY, '+', $shiftY, $this->_scope($entity));
-		$this->_updateBetween(array(
+		$this->_updateBetween([
 			'floor' => (0 - $shiftY), 'ceiling' => 0
-		), '+', $spanToZero - $shiftX, $this->_scope($entity));
+		], '+', $spanToZero - $shiftX, $this->_scope($entity));
 
-		$entity->set(array(
+		$entity->set([
 			$left => $entity->$left - $shiftX, $right => $entity->$right - $shiftX
-		));
+		]);
 		return true;
 	}
 
@@ -485,10 +485,10 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	protected function _getMax($entity) {
 		extract($this->_config);
 
-		$node = $model::find('first', array(
+		$node = $model::find('first', [
 			'conditions' => $this->_scope($entity),
-			'order' => array($right => 'desc')
-		));
+			'order' => [$right => 'desc']
+		]);
 		if ($node) {
 			return $node->$right;
 		}
@@ -546,12 +546,12 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 	public function verify($entity) {
 		extract($this->_config);
 
-		$count = $model::find('count', array(
-			'conditions' => array(
-				$left => array('>' => $entity->$left),
-				$right => array('<' => $entity->$right)
-			) + $this->_scope($entity)
-		));
+		$count = $model::find('count', [
+			'conditions' => [
+				$left => ['>' => $entity->$left],
+				$right => ['<' => $entity->$right]
+			] + $this->_scope($entity)
+		]);
 		if (!$count) {
 			return true;
 		}
@@ -560,74 +560,74 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		if ($entity->$left >= $entity->$right) {
 			$id = $entity->data($model::key());
-			$errors[] = array('root node', "`{$id}`", 'has left greater than right.');
+			$errors[] = ['root node', "`{$id}`", 'has left greater than right.'];
 		}
 
-		$errors = array();
+		$errors = [];
 
 		for ($i = $min; $i <= $edge; $i++) {
-			$count = $model::find('count', array(
-					'conditions' => array(
-						'or' => array($left => $i, $right => $i)
-					) + $this->_scope($entity)
-				));
+			$count = $model::find('count', [
+					'conditions' => [
+						'or' => [$left => $i, $right => $i]
+					] + $this->_scope($entity)
+				]);
 
 			if ($count != 1) {
 				if ($count == 0) {
-					$errors[] = array('node boundary', "`{$i}`", 'missing');
+					$errors[] = ['node boundary', "`{$i}`", 'missing'];
 				} else {
-					$errors[] = array('node boundary', "`{$i}`", 'duplicate');
+					$errors[] = ['node boundary', "`{$i}`", 'duplicate'];
 				}
 			}
 		}
 
-		$node = $model::find('first', array(
-			'conditions' => array(
-				$right => array('<' => $left)
-			) + $this->_scope($entity)
-		));
+		$node = $model::find('first', [
+			'conditions' => [
+				$right => ['<' => $left]
+			] + $this->_scope($entity)
+		]);
 
 		if ($node) {
 			$id = $node->data($model::key());
-			$errors[] = array('node id', "`{$id}`", 'has left greater or equal to right.');
+			$errors[] = ['node id', "`{$id}`", 'has left greater or equal to right.'];
 		}
 
-		$model::bind('belongsTo', 'Verify', array(
+		$model::bind('belongsTo', 'Verify', [
 			'to' => $model,
 			'key' => $parent
-		));
+		]);
 
-		$results = $model::find('all', array(
+		$results = $model::find('all', [
 			'conditions' => $this->_scope($entity),
-			'with' => array('Verify')
-		));
+			'with' => ['Verify']
+		]);
 
 		$id = $model::key();
 		foreach ($results as $key => $instance) {
 			if (is_null($instance->$left) || is_null($instance->$right)) {
-				$errors[] = array('node', $instance->$id,
-					'has invalid left or right values');
+				$errors[] = ['node', $instance->$id,
+					'has invalid left or right values'];
 			} elseif ($instance->$left == $instance->$right) {
-				$errors[] = array('node', $instance->$id,
-					'left and right values identical');
+				$errors[] = ['node', $instance->$id,
+					'left and right values identical'];
 			} elseif ($instance->$parent) {
 				if (!isset($instance->verify->$id) || !$instance->verify->$id) {
-					$errors[] = array('node', $instance->$id,
-						'The parent node ' . $instance->$parent . ' doesn\'t exist');
+					$errors[] = ['node', $instance->$id,
+						'The parent node ' . $instance->$parent . ' doesn\'t exist'];
 				} elseif ($instance->$left < $instance->verify->$left) {
-					$errors[] = array('node', $instance->$id,
-						'left less than parent (node ' . $instance->verify->$id . ').');
+					$errors[] = ['node', $instance->$id,
+						'left less than parent (node ' . $instance->verify->$id . ').'];
 				} elseif ($instance->$right > $instance->verify->$right) {
-					$errors[] = array('node', $instance->$id,
-						'right greater than parent (node ' . $instance->verify->$id . ').');
+					$errors[] = ['node', $instance->$id,
+						'right greater than parent (node ' . $instance->verify->$id . ').'];
 				}
-			} elseif ($model::find('count', array(
-					'conditions' => array(
-					$left => array('<' => $instance->$left),
-					$right => array('>' => $instance->$right)
-					) + $this->_scope($entity)
-				))) {
-				$errors[] = array('node', $instance->$id, 'the parent field is blank, but has a parent');
+			} elseif ($model::find('count', [
+					'conditions' => [
+					$left => ['<' => $instance->$left],
+					$right => ['>' => $instance->$right]
+					] + $this->_scope($entity)
+				])) {
+				$errors[] = ['node', $instance->$id, 'the parent field is blank, but has a parent'];
 			}
 		}
 
