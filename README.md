@@ -1,5 +1,13 @@
 # Tree behavior
 
+This is forked from [jails/li3_tree](https://github.com/jails/li3_tree)
+
+You can find synced repo at `master` branch
+
+And PHP 5.3 compatible port at `php-5.3` branch (default branch of this fork)
+
+---
+
 ## Requirements
 
 - This plugin needs [li3_behaviors](https://github.com/jails/li3_behaviors).
