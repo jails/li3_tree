@@ -34,12 +34,11 @@ Libraries::add('li3_tree', ['default' => true]);
  */
 Libraries::add('li3_behaviors');
 Libraries::add('li3_fixtures');
-Libraries::add('li3_sqltools');
 
 /**
  * Setup test database
  */
-Connections::add('default', [
+Connections::add('test', [
 	'type' => 'database',
 	'adapter' => 'MySql',
 	'host' => 'localhost',
