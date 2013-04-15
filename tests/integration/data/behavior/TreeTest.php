@@ -17,7 +17,7 @@ use li3_tree\extensions\data\behavior\Tree;
 
 class TreeTest extends \lithium\test\Integration {
 
-	protected $_connection = 'default';
+	protected $_connection = 'test';
 
 	protected $_fixtures = array(
 		'image' => 'li3_tree\tests\fixture\source\ImageFixture',

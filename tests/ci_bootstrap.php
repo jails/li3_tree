@@ -34,7 +34,6 @@ Libraries::add('li3_tree', array('default' => true));
  */
 Libraries::add('li3_behaviors');
 Libraries::add('li3_fixtures');
-Libraries::add('li3_sqltools');
 
 /**
  * Setup test database
@@ -47,6 +46,6 @@ Connections::add('test', array(
 	'password' => '',
 	'database' => 'li3tree_test',
 	'encoding' => 'UTF-8'
-));
+]);
 
 ?>

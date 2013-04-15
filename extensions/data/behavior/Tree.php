@@ -49,7 +49,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		}
 		$behavior = $this;
 		$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
-			if ($behavior->invokeMethod('_beforeSave', array($params))) {
+			if ($behavior->invokeMethod('_beforeSave', [$params])) {
 				return $chain->next($self, $params, $chain);
 			}
 		});
@@ -98,7 +98,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$recursive = $rec ? : $recursive;
 
 		if ($recursive) {
-			if ($mode == 'count') {
+			if ($mode === 'count') {
 				return ($entity->$right - $entity->$left - 1) / 2;
 			} else {
 				return $model::find($mode, array(
@@ -153,7 +153,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		extract($this->_config);
 
 		if ($newParent !== null) {
-			if($this->_scope($entity) != ($parentScope = $this->_scope($newParent))) {
+			if($this->_scope($entity) !== ($parentScope = $this->_scope($newParent))) {
 				$entity->set($parentScope);
 			} elseif ($newParent->$left > $entity->$left && $newParent->$right < $entity->$right) {
 				return false;
@@ -204,14 +204,14 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 				));
 			}
 		} elseif (isset($entity->$parent)) {
-			if ($entity->$parent == $entity->data($model::key())) {
+			if ($entity->$parent === $entity->data($model::key())) {
 				return false;
 			}
 			$oldNode = $this->_getById($entity->data($model::key()));
-			if ($oldNode->$parent == $entity->$parent) {
+			if ($oldNode->$parent === $entity->$parent) {
 				return true;
 			}
-			if (($newScope = $this->_scope($entity)) != ($oldScope = $this->_scope($oldNode))) {
+			if (($newScope = $this->_scope($entity)) !== ($oldScope = $this->_scope($oldNode))) {
 				$this->_updateScope($entity, $oldScope, $newScope);
 				return true;
 			}
@@ -340,7 +340,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		extract($this->_config);
 
 		$span = 1;
-		if ($entity->$right - $entity->$left != 1) {
+		if ($entity->$right - $entity->$left !== 1) {
 			$span = $entity->$right - $entity->$left;
 			$model::remove(array($parent => $entity->data($model::key())));
 		}
@@ -422,9 +422,9 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 						$left => $entity->$right + 1
 				)));
 
-		if ($next != null) {
+		if ($next !== null) {
 			$spanToZero = $entity->$right;
-			$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
+			$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
 			$shiftX = ($next->$right - $next->$left) + 1;
 			$rangeY = array('floor' => $next->$left, 'ceiling' => $next->$right);
 			$shiftY = ($entity->$right - $entity->$left) + 1;
@@ -508,11 +508,11 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		$parent = $this->_getById($entity->$parent);
 
-		if ($entity->$left == ($parent->$left + 1)) {
+		if ($entity->$left === ($parent->$left + 1)) {
 			return 0;
 		}
 
-		if (($entity->$right + 1) == $parent->$right) {
+		if (($entity->$right + 1) === $parent->$right) {
 			if ($childrenCount === false) {
 				$childrenCount = $parent->childrens(false, 'count');
 			}
@@ -524,7 +524,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		$id = $entity->data($model::key());
 		foreach ($children as $child) {
-			if ($child->data($model::key()) == $id) {
+			if ($child->data($model::key()) === $id) {
 				return $count;
 			}
 			$count++;
@@ -560,7 +560,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		if ($entity->$left >= $entity->$right) {
 			$id = $entity->data($model::key());
-			$errors[] = array('root node', "`{$id}`", 'has left greater than right.');
+			$errors[] = ['root node', "`{$id}`", 'has left greater than right.'];
 		}
 
 		$errors = array();
@@ -572,9 +572,9 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 					) + $this->_scope($entity)
 				));
 
-			if ($count != 1) {
-				if ($count == 0) {
-					$errors[] = array('node boundary', "`{$i}`", 'missing');
+			if ($count !== 1) {
+				if ($count === 0) {
+					$errors[] = ['node boundary', "`{$i}`", 'missing'];
 				} else {
 					$errors[] = array('node boundary', "`{$i}`", 'duplicate');
 				}
@@ -607,7 +607,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 			if (is_null($instance->$left) || is_null($instance->$right)) {
 				$errors[] = array('node', $instance->$id,
 					'has invalid left or right values');
-			} elseif ($instance->$left == $instance->$right) {
+			} elseif ($instance->$left === $instance->$right) {
 				$errors[] = array('node', $instance->$id,
 					'left and right values identical');
 			} elseif ($instance->$parent) {

@@ -8,10 +8,9 @@ before_script:
   - mkdir config
   - cp tests/ci_bootstrap.php config/bootstrap.php
   - mkdir ../libraries
-  - git clone --depth=100 --quiet --branch=master git://github.com/UnionOfRAD/lithium.git ../libraries/lithium
-  - git clone --depth=100 --quiet --branch=master git://github.com/UnionOfRAD/li3_fixtures.git ../libraries/li3_fixtures
-  - git clone --depth=100 --quiet --branch=php-5.3 git://github.com/djordje/li3_sqltools.git ../libraries/li3_sqltools
-  - git clone --depth=100 --quiet --branch=php-5.3 git://github.com/djordje/li3_behaviors.git ../libraries/li3_behaviors
+  - git clone --branch=dev --depth=100 --quiet git://github.com/UnionOfRAD/lithium.git ../libraries/lithium
+  - git clone --branch=master --depth=100 --quiet git://github.com/UnionOfRAD/li3_fixtures.git ../libraries/li3_fixtures
+  - git clone --branch=php-5.3 --depth=100 --quiet git://github.com/djordje/li3_behaviors.git ../libraries/li3_behaviors
   - mysql -e 'create database li3tree_test;'
 
 script: ../libraries/lithium/console/li3 test --filters=Profiler tests/integration
