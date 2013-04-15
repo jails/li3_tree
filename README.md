@@ -5,7 +5,6 @@
 - **PHP 5.4**
 - This plugin needs [li3_behaviors](https://github.com/jails/li3_behaviors).
 - This plugin needs [li3_fixtures](https://github.com/UnionOfRAD/li3_fixtures) (only if you intend to run tests).
-- This plugin needs [li3_sqltools](https://github.com/UnionOfRAD/li3_sqltools) (only if you intend to run tests).
 
 ## Installation
 
@@ -43,11 +42,14 @@ Example of attaching the tree behavior to a model:
 //app/models/Comments.php
 namespace app\models;
 
-class Comments extends \li3_behaviors\data\model\Behaviorable {
+use li3_behaviors\data\model\Behaviors;
 
-	public $belongsTo = array('Posts');
+class Comments extends \lithium\data\Model {
+	use Behaviors;
 
-    protected $_actsAs = array('Tree' => array('scope' => array('post_id')));
+	public $belongsTo = ['Posts'];
+
+    protected $_actsAs = ['Tree' => ['scope' => ['post_id']]];
 }
 ?>
 ```
@@ -59,13 +61,13 @@ In order to store multiple trees in the same table you need to set the `'scope'`
 `'scope'` can be a full condition:
 
 ```php
- protected $_actsAs = array('Tree' => array('scope' => array('region' => 'head')));
+ protected $_actsAs = ['Tree' => ['scope' => ['region' => 'head']]];
 ```
 
 Or a simple fieldname like a foreign key:
 
 ```php
- protected $_actsAs = array('Tree' => array('scope' => array('post_id')));
+ protected $_actsAs = ['Tree' => ['scope' => ['post_id']]];
 ```
 
 In this last case, the full condition will be populated from entity datas. This mean you can't do any CRUD action if the entity datas don't contain all necessary datas for perfoming a well scoped CRUD action.
@@ -74,20 +76,20 @@ In this last case, the full condition will be populated from entity datas. This 
 ```php
 <?php
 
-$root1 = Comment::create(array('post_id' => 1));
+$root1 = Comment::create(['post_id' => 1]);
 $root1->save();
 
-$root2 = Comment::create(array('post_id' => 2));
+$root2 = Comment::create(['post_id' => 2]);
 $root2->save();
 
-$neighbor1 = Comment::create(array('post_id' => 1));
+$neighbor1 = Comment::create(['post_id' => 1]);
 $neighbor1->save();
 
 $neighbor1->moveDown();
 $root1->moveUp();
 $neighbor1->move(0);
 
-$subelement1 = Comment::create(array('post_id' => 1, 'parent_id' => $neighbor1->id));
+$subelement1 = Comment::create(['post_id' => 1, 'parent_id' => $neighbor1->id]);
 $subelement1->save();
 
 var_export($root1->childrens());
