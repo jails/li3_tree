@@ -46,6 +46,6 @@ Connections::add('test', array(
 	'password' => '',
 	'database' => 'li3tree_test',
 	'encoding' => 'UTF-8'
-]);
+));
 
 ?>
