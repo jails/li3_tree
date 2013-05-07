@@ -424,7 +424,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		if ($next !== null) {
 			$spanToZero = $entity->$right;
-			$rangeX = ['floor' => $entity->$left, 'ceiling' => $entity->$right];
+			$rangeX = array('floor' => $entity->$left, 'ceiling' => $entity->$right);
 			$shiftX = ($next->$right - $next->$left) + 1;
 			$rangeY = array('floor' => $next->$left, 'ceiling' => $next->$right);
 			$shiftY = ($entity->$right - $entity->$left) + 1;
@@ -560,7 +560,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 		if ($entity->$left >= $entity->$right) {
 			$id = $entity->data($model::key());
-			$errors[] = ['root node', "`{$id}`", 'has left greater than right.'];
+			$errors[] = array('root node', "`{$id}`", 'has left greater than right.');
 		}
 
 		$errors = array();
@@ -574,7 +574,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 
 			if ($count !== 1) {
 				if ($count === 0) {
-					$errors[] = ['node boundary', "`{$i}`", 'missing'];
+					$errors[] = array('node boundary', "`{$i}`", 'missing');
 				} else {
 					$errors[] = array('node boundary', "`{$i}`", 'duplicate');
 				}
