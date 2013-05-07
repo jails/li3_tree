@@ -49,7 +49,7 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		}
 		$behavior = $this;
 		$model::applyFilter('save', function($self, $params, $chain) use ($behavior) {
-			if ($behavior->invokeMethod('_beforeSave', [$params])) {
+			if ($behavior->invokeMethod('_beforeSave', array($params))) {
 				return $chain->next($self, $params, $chain);
 			}
 		});
