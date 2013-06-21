@@ -137,7 +137,10 @@ class Tree extends \li3_behaviors\data\model\Behavior {
 		$data[] = $entity;
 		$data = array_reverse($data);
 		$model = $entity->model();
-		return $model::connection()->item($model, $data, ['exists' => true, 'class' => 'set']);
+		return $model::create($data, [
+			'exists' => true,
+			'class' => 'set'
+		]);
 	}
 
 	/**
